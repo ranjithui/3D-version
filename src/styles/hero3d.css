@@ -1,0 +1,121 @@
+/* =================================================================
+ * Homepage hero: interactive 3D cake assembly (src/components/hero3d).
+ * Split layout: copy on the left, the 3D cake on the right (~55–60%
+ * of the visual). The canvas fills the section; the camera shifts
+ * the cake right on desktop and up on phones. Heights are fixed up
+ * front so nothing shifts while the 3D scene loads.
+ * ================================================================= */
+
+.df-hero {
+  --df-deep: #24120C;
+  --df-brown: #3B1F14;
+  --df-forest: #46583A;
+  --df-cream: #FFF5E8;
+  --df-gold: #C99A52;
+  min-height: clamp(36rem, calc(100svh - 6.5rem), 50rem);
+}
+/* Matches the WebGL backdrop, so the canvas fading in causes no flash or shift. */
+.df-hero.is-3d {
+  background:
+    radial-gradient(55% 75% at 70% 50%, #4a2a1a 0%, rgba(59, 31, 20, 0) 70%),
+    radial-gradient(45% 60% at 0% 100%, rgba(70, 88, 58, .35) 0%, rgba(70, 88, 58, 0) 70%),
+    var(--df-deep);
+}
+
+.df-hero__stage {
+  position: absolute; inset: 0; z-index: 0;
+  touch-action: pan-y; /* vertical swipes still scroll the page; horizontal swipes turn the cake */
+}
+.df-hero__stage canvas { opacity: 0; transition: opacity 1.2s cubic-bezier(.22, 1, .36, 1); }
+.df-hero.is-ready .df-hero__stage canvas { opacity: 1; }
+.df-hero.is-done .df-hero__stage canvas { cursor: grab; }
+.df-hero.is-done .df-hero__stage canvas.is-grabbing { cursor: grabbing; }
+.df-hero__loading {
+  position: absolute; right: 22%; top: 50%; transform: translate(50%, -50%);
+  font: 500 .72rem/1 var(--font-sans); letter-spacing: .28em; text-transform: uppercase;
+  color: rgba(201, 154, 82, .7); animation: df-breathe 1.6s ease-in-out infinite;
+}
+@keyframes df-breathe { 50% { opacity: .35; } }
+
+.df-hero__shade {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(36, 18, 12, .88) 0%, rgba(36, 18, 12, .6) 28%, rgba(36, 18, 12, .12) 50%, rgba(36, 18, 12, 0) 62%);
+}
+.df-hero.is-fallback .df-hero__shade {
+  background:
+    linear-gradient(90deg, rgba(24, 15, 8, .82) 0%, rgba(24, 15, 8, .55) 38%, rgba(24, 15, 8, .08) 68%, rgba(24, 15, 8, 0) 100%),
+    linear-gradient(0deg, rgba(24, 15, 8, .45) 0%, rgba(24, 15, 8, 0) 35%);
+}
+
+/* Copy sits above the canvas but lets drags through outside the text itself. */
+.df-hero__inner { position: relative; z-index: 2; pointer-events: none; }
+.df-hero__copy { pointer-events: auto; max-width: 31rem; }
+.df-hero__kicker { color: var(--df-gold); letter-spacing: .32em; }
+.df-hero__title { color: var(--df-cream); }
+.df-hero__title em { color: #e9c58f; }
+.df-hero .hm-vhero__lead { color: rgba(255, 245, 232, .82); }
+.df-hero .hm-btn--solid { background: var(--df-forest); }
+.df-hero .hm-btn--solid:hover { background: #3a4a30; }
+
+.df-hero__cue {
+  display: flex; align-items: center; gap: .6rem; margin-top: 1.6rem; min-height: 1.2rem;
+  font: 600 .7rem/1.2 var(--font-sans); letter-spacing: .24em; text-transform: uppercase;
+  color: rgba(201, 154, 82, .9);
+}
+.df-hero__cue-dot { width: .45rem; height: .45rem; border-radius: 999px; background: var(--df-gold); flex-shrink: 0; }
+.df-hero__cue-dot.is-live { animation: df-pulse 1.6s ease-out infinite; }
+@keyframes df-pulse { 0% { box-shadow: 0 0 0 0 rgba(201, 154, 82, .7); } 100% { box-shadow: 0 0 0 .7rem rgba(201, 154, 82, 0); } }
+
+/* ---------- Controls dock: stage caption + replay / pause / sound ---------- */
+.df-hero__dock {
+  position: absolute; z-index: 3; right: clamp(1rem, 3vw, 2.25rem); bottom: 6.25rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.df-hero__stagecap {
+  position: relative; min-width: 15rem; padding-bottom: .55rem; text-align: right;
+  font: 500 .74rem/1.2 var(--font-sans); letter-spacing: .06em; color: rgba(255, 245, 232, .78);
+}
+.df-hero__stagecap b { margin-right: .35rem; font-weight: 700; color: var(--df-gold); letter-spacing: .12em; }
+.df-hero__stagecap i {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(255, 245, 232, .18);
+}
+.df-hero__stagecap i::after {
+  content: ""; position: absolute; inset: 0; transform-origin: left; transform: scaleX(var(--p, 0));
+  background: var(--df-gold); transition: transform .8s cubic-bezier(.22, 1, .36, 1);
+}
+.df-hero__ctrls { display: flex; gap: .45rem; }
+.df-hero__btn {
+  display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 999px; cursor: pointer;
+  color: var(--df-cream); background: rgba(36, 18, 12, .45);
+  box-shadow: inset 0 0 0 1px rgba(201, 154, 82, .45);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: background-color .25s, box-shadow .25s, color .25s;
+}
+.df-hero__btn:hover { background: rgba(201, 154, 82, .22); box-shadow: inset 0 0 0 1px var(--df-gold); }
+.df-hero__btn[aria-pressed="true"] { color: var(--df-gold); }
+.df-hero__btn:focus-visible { outline: 2px solid var(--df-gold); outline-offset: 3px; }
+.df-hero__btn:disabled { opacity: .45; cursor: default; }
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1099px) {
+  .df-hero__shade { background: linear-gradient(90deg, rgba(36, 18, 12, .9) 0%, rgba(36, 18, 12, .65) 38%, rgba(36, 18, 12, .1) 70%); }
+  .df-hero__stagecap { min-width: 0; }
+}
+
+/* ---------- Phone: cake in the upper half, copy anchored below ---------- */
+@media (max-width: 640px) {
+  .df-hero { min-height: min(46rem, calc(100svh - 4.5rem)); }
+  .df-hero.is-3d .df-hero__shade {
+    background: linear-gradient(0deg, rgba(36, 18, 12, .95) 0%, rgba(36, 18, 12, .8) 34%, rgba(36, 18, 12, .1) 56%, rgba(36, 18, 12, 0) 100%);
+  }
+  .df-hero__loading { right: 50%; top: 28%; }
+  .df-hero__cue { margin-top: 1rem; font-size: .62rem; }
+  .df-hero__dock { top: 1rem; right: 1rem; bottom: auto; }
+  .df-hero__stagecap { display: none; }
+  .df-hero__btn { width: 2.25rem; height: 2.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .df-hero__cue-dot.is-live, .df-hero__loading { animation: none; }
+  .df-hero__stage canvas { transition: none; }
+}

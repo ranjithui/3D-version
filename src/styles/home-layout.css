@@ -1,0 +1,138 @@
+/*
+ * Home page + header layout matching the approved mockup:
+ * white header, photo hero with serif headline, floating quick-category card,
+ * bestseller cards, promise strip, custom-cake banner, how-it-works, stores banner.
+ * Colours stay on the site palette (olive accent, cocoa text, cream/sand surfaces).
+ */
+
+:root {
+  --font-serif: "Playfair Display", "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-script: "Segoe Script", "Brush Script MT", "Snell Roundhand", cursive;
+}
+
+/* The header now carries the cart on every screen size. */
+.m-fab { display: none !important; }
+
+/* ================= Header ================= */
+.hd { position: sticky; top: 0; z-index: 50; background: #fff; transition: box-shadow .3s var(--m-ease); }
+.hd.is-scrolled { box-shadow: 0 6px 24px -14px rgba(72, 45, 24, .35); }
+.hd__bar { display: flex; align-items: center; gap: 1.5rem; height: 4.75rem; }
+.hd__logo img { height: 3.1rem; width: auto; }
+.hd__nav { display: none; flex: 1; justify-content: center; }
+.hd__nav > ul { display: flex; align-items: center; gap: 2rem; }
+.hd__item { position: relative; }
+.hd__link {
+  position: relative; display: inline-flex; align-items: center; gap: .3rem; padding: 1.6rem 0;
+  font: 500 .92rem/1 var(--font-sans); color: var(--cocoa); white-space: nowrap; transition: color .2s;
+}
+.hd__link svg { opacity: .7; transition: transform .25s var(--m-ease); }
+.hd__item:hover .hd__link svg { transform: rotate(180deg); }
+.hd__link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 1rem; height: 2px; border-radius: 2px;
+  background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .25s var(--m-ease);
+}
+.hd__link:hover { color: var(--accent); }
+.hd__link:hover::after, .hd__link.is-active::after { transform: scaleX(1); }
+.hd__link.is-active { color: var(--accent); font-weight: 600; }
+.hd__drop {
+  position: absolute; left: 50%; top: 100%; min-width: 13.5rem; transform: translate(-50%, 8px);
+  opacity: 0; visibility: hidden; transition: opacity .2s, transform .25s var(--m-ease), visibility .2s;
+}
+.hd__item:hover .hd__drop, .hd__item:focus-within .hd__drop { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.hd__drop ul { padding: .5rem; border-radius: 16px; background: #fff; box-shadow: 0 24px 50px -20px rgba(72, 45, 24, .4), 0 0 0 1px rgba(72, 45, 24, .07); }
+.hd__drop a { display: block; padding: .65rem .85rem; border-radius: 10px; font: 500 .875rem/1.2 var(--font-sans); color: var(--cocoa); white-space: nowrap; transition: background-color .15s, color .15s; }
+.hd__drop a:hover { background: var(--cream); color: var(--accent); }
+.hd__actions { display: flex; align-items: center; gap: .35rem; margin-left: auto; }
+.hd__icon { position: relative; display: inline-flex; width: 2.75rem; height: 2.75rem; align-items: center; justify-content: center; border-radius: 999px; color: var(--cocoa); cursor: pointer; transition: background-color .2s, color .2s; }
+.hd__icon:hover { background: var(--cream); color: var(--accent); }
+.hd__icon:focus-visible, .hd__link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hd__badge { position: absolute; top: .1rem; right: .05rem; min-width: 1.2rem; height: 1.2rem; padding: 0 .3rem; border-radius: 999px; background: var(--accent); color: #fff; font: 700 .68rem/1.2rem var(--font-sans); text-align: center; box-shadow: 0 0 0 2px #fff; }
+.hd-search { padding-block: .75rem 1rem; border-top: 1px solid var(--line); background: #fff; animation: m-drop .25s var(--m-ease); }
+.hd-search > .m-wrap { max-width: 48rem; }
+@media (min-width: 1100px) { .hd__nav { display: flex; } .hd__actions { margin-left: 0; } }
+@media (max-width: 640px) { .hd__bar { height: 4rem; gap: .75rem; } .hd__logo img { height: 2.5rem; } .hd__icon { width: 2.5rem; height: 2.5rem; } }
+
+/* ================= Shared home bits ================= */
+.hm { background: #faf6f1; padding-bottom: clamp(3rem, 6vw, 4.5rem); }
+body:has(.hm) { background: #faf6f1; }
+.hm-section { margin-top: clamp(2.5rem, 5vw, 3.75rem); }
+.hm-kicker { display: block; font: 600 .78rem/1 var(--font-sans); letter-spacing: .32em; text-transform: uppercase; color: var(--cocoa); }
+.hm-h2 { font: 700 clamp(1.75rem, 3.2vw, 2.4rem)/1.1 var(--font-serif); letter-spacing: -0.01em; color: var(--cocoa); }
+.hm-h2 em { font-style: italic; color: var(--accent); }
+.hm-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.hm-head--rule::after { content: ""; flex: 1; height: 1px; margin-left: 1.5rem; background: var(--line); }
+.hm-link { display: inline-flex; align-items: center; gap: .4rem; padding-bottom: .2rem; border-bottom: 1.5px solid currentColor; font: 600 .9rem/1 var(--font-sans); color: var(--accent); }
+.hm-link svg { transition: transform .25s var(--m-ease); }
+.hm-link:hover svg { transform: translateX(3px); }
+
+.hm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .55rem; height: 3rem; padding: 0 1.75rem;
+  border-radius: 999px; font: 600 .95rem/1 var(--font-sans); white-space: nowrap; cursor: pointer;
+  transition: background-color .25s var(--m-ease), color .25s var(--m-ease), box-shadow .25s var(--m-ease), transform .2s;
+}
+.hm-btn:active { transform: scale(.98); }
+.hm-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.hm-btn svg { transition: transform .25s var(--m-ease); }
+.hm-btn:hover svg:last-child { transform: translateX(3px); }
+.hm-btn--solid { background: var(--accent); color: #fff; box-shadow: 0 10px 22px -12px rgba(75, 85, 62, .9); }
+.hm-btn--solid:hover { background: var(--accent-hover); }
+.hm-btn--outline { background: rgba(255, 255, 255, .55); color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+.hm-btn--outline:hover { background: var(--accent); color: #fff; }
+.hm-btn--white { background: #fff; color: var(--accent); }
+.hm-btn--white:hover { background: var(--cream); }
+.hm-btn--sm { height: 2.6rem; padding: 0 1.4rem; font-size: .875rem; }
+
+/* Hero: see hero-video.css (version 2 video hero) */
+
+/* Quick categories: see home-sections.css */
+
+/* ================= Bestseller cards ================= */
+
+/* Promise strip, custom cake, how it works, stores: see home-sections.css */
+
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* =================================================================
+ * Phone layout (≤ 640px): compact hero with the cake on the first
+ * screen, swipeable category chips, tighter banners and footer.
+ * ================================================================= */
+@media (max-width: 640px) {
+  /* Hero */
+  .hm-kicker { font-size: .68rem; letter-spacing: .26em; }
+
+
+  /* Section rhythm */
+  .hm-section { margin-top: 2.25rem; }
+  .hm-head { margin-bottom: 1rem; }
+  .hm-h2 { font-size: 1.65rem; }
+  .hm-link { font-size: .8rem; }
+
+}
+
+/* ================= Listing pages on phones ================= */
+@media (max-width: 640px) {
+  .m-pagehead { padding: 1.1rem 1.15rem 1.25rem; border-radius: 22px; }
+  .m-pagehead > .flex { margin-top: .75rem; flex-wrap: nowrap; align-items: flex-end; }
+  .m-pagehead .m-eyebrow { font-size: .62rem; }
+  .m-pagehead h1.m-h1 { margin-top: .4rem; font-size: 1.85rem !important; line-height: 1.05; }
+  .m-pagehead p { margin-top: .35rem; font-size: .8rem; }
+  .m-pagehead label { height: 2.4rem; padding-inline: .8rem; font-size: .8rem; }
+  .m-tabs { margin-inline: -1rem; padding: .35rem 1rem; }
+  .m-tab { height: 2.3rem; padding-inline: .95rem; font-size: .78rem; }
+  .m-grid { gap: .65rem; }
+  .m-card { padding: .35rem; border-radius: 16px; }
+  .m-card:hover { transform: none; }
+  .m-card__media { border-radius: 12px; }
+  .m-card__chips { top: .4rem; left: .4rem; right: .4rem; }
+  .m-chip { height: 1.35rem; padding: 0 .5rem; font-size: .62rem; }
+  .m-card__body { padding: .65rem .35rem .3rem; }
+  .m-card__title { font-size: .86rem; }
+  .m-card__meta { font-size: .66rem; }
+  .m-card__foot { padding-top: .6rem; }
+  .m-card__go { display: none; }
+  .m-price { gap: .3rem; }
+  .m-price strong { font-size: 1rem; }
+  .m-price s { font-size: .72rem; }
+  .m-card__order { height: 2.4rem; margin-top: .7rem; font-size: .76rem; }
+}

@@ -1,0 +1,70 @@
+/* =================================================================
+ * 3D layer (the homepage hero lives in hero3d.css): pointer-tilt cards (src/lib/tilt3d.js) and
+ * 3D scroll reveals (Reveal in components/ui/Section.jsx).
+ * ================================================================= */
+
+/* ---------- Pointer tilt ---------- */
+/* --rx/--ry/--gx/--gy are set by src/lib/tilt3d.js while the pointer is over a card. */
+.tilt3d {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+  transform-style: preserve-3d;
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1), box-shadow .5s;
+  will-change: transform;
+}
+.tilt3d.is-tilting {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px);
+  transition: transform .12s linear, box-shadow .3s;
+  box-shadow: 0 30px 50px -24px rgba(40, 24, 12, .45);
+}
+.tilt3d::before {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, .28), rgba(255, 255, 255, 0) 55%);
+  opacity: 0; transition: opacity .4s; mix-blend-mode: soft-light;
+}
+.tilt3d.is-tilting::before { opacity: 1; }
+/* Pop inner content forward for parallax depth. */
+.tilt3d .m-tile__body,
+.tilt3d .hp-step__icon { transform: translateZ(40px); }
+.hm-best-card, .m-card, .hp-cat, .hp-step, .hp-custom, .hp-stores { position: relative; }
+
+/* ---------- 3D scroll reveal ---------- */
+.reveal3d { transform-origin: 50% 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt3d, .tilt3d * { transform: none !important; transition: none !important; }
+}
+
+/* ---------- Product page: Photo / 3D Preview ---------- */
+.pdp-viewtabs {
+  display: inline-flex; gap: .25rem; padding: .25rem; border-radius: 999px;
+  background: #fff; box-shadow: inset 0 0 0 1px rgba(183, 131, 74, .35);
+}
+.pdp-viewtabs button {
+  display: inline-flex; align-items: center; gap: .4rem; height: 2.25rem; padding: 0 1rem; border-radius: 999px;
+  font: 600 .82rem/1 var(--font-sans); color: var(--m-ink, #2e1608); cursor: pointer;
+  transition: background-color .25s, color .25s;
+}
+.pdp-viewtabs button:hover { background: rgba(75, 85, 62, .08); }
+.pdp-viewtabs button[aria-selected="true"] { background: var(--m-olive, #4b553e); color: #fff; }
+.pdp-viewtabs button:focus-visible { outline: 2px solid var(--m-olive, #4b553e); outline-offset: 2px; }
+
+.pdp-3d {
+  position: relative; overflow: hidden; border-radius: 1rem;
+  background: radial-gradient(70% 60% at 50% 40%, #fff8ec 0%, #f3e6d1 70%, #ead8bc 100%);
+  box-shadow: inset 0 0 0 1px rgba(183, 131, 74, .3);
+  touch-action: none;
+}
+.pdp-3d canvas { cursor: grab; opacity: 0; transition: opacity .6s; }
+.pdp-3d.is-ready canvas { opacity: 1; }
+.pdp-3d canvas:active { cursor: grabbing; }
+.pdp-3d__loading {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font: 500 .85rem/1 var(--font-sans); color: rgba(46, 22, 8, .6);
+}
+.pdp-3d__hint {
+  position: absolute; left: .9rem; right: .9rem; top: .8rem; pointer-events: none;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .2rem .45rem;
+  font: 600 .72rem/1.3 var(--font-sans); letter-spacing: .04em; color: rgba(46, 22, 8, .75);
+}
+.pdp-3d__hint span { flex-basis: 100%; font-weight: 400; letter-spacing: 0; color: rgba(46, 22, 8, .55); }
+.pdp-photo { position: relative; }
